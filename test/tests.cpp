@@ -47,14 +47,14 @@ TEST(TimedDoorTest, UnlockLockDoor) {
 TEST(TimedDoorTest, DoorRemainsOpenAfterTimeout) {
     TimedDoor door(2);
     door.unlock();
-    std::this_thread::sleep_for(std::chrono::seconds(3));
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
     EXPECT_TRUE(door.isDoorOpened());
 }
 
 TEST(TimedDoorTest, DoorClosesAutomaticallyAfterTimeout) {
     TimedDoor door(2);
     door.unlock();
-    std::this_thread::sleep_for(std::chrono::seconds(3));
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
     EXPECT_FALSE(door.isDoorOpened());
 }
 
@@ -72,20 +72,20 @@ TEST(TimedDoorTest, LockWhileDoorAlreadyClosed) {
 TEST(TimedDoorTest, ThrowStateAfterTimeout) {
     TimedDoor door(2);
     door.unlock();
-    std::this_thread::sleep_for(std::chrono::seconds(3));
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
     EXPECT_THROW(door.throwState(), std::runtime_error);
 }
 
 TEST(TimedDoorTest, DoorRemainsClosedIfNotUnlocked) {
     TimedDoor door(5);
-    std::this_thread::sleep_for(std::chrono::seconds(3));
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
     EXPECT_FALSE(door.isDoorOpened());
 }
 
 TEST(TimedDoorTest, DoorRemainsLockedIfNotUnlocked) {
     TimedDoor door(5);
     door.lock();
-    std::this_thread::sleep_for(std::chrono::seconds(7));
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
     EXPECT_FALSE(door.isDoorOpened());
 }
 
@@ -111,20 +111,20 @@ TEST(TimedDoorTest, DoorClosesWhenThrowStateCalledWhileOpen) {
 TEST(TimedDoorTest, ThrowStateWhenTimeoutReachedWhileOpen) {
     TimedDoor door(2);
     door.unlock();
-    std::this_thread::sleep_for(std::chrono::seconds(3));
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
     EXPECT_THROW(door.throwState(), std::runtime_error);
 }
 
 TEST(TimedDoorTest, NoThrowStateWhenTimeoutNotReachedWhileOpen) {
     TimedDoor door(5);
     door.unlock();
-    std::this_thread::sleep_for(std::chrono::seconds(3));
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
     EXPECT_NO_THROW(door.throwState());
 }
 
 TEST(TimedDoorTest, ThrowStateWhenTimeoutReachedWhileClosed) {
     TimedDoor door(2);
     door.lock();
-    std::this_thread::sleep_for(std::chrono::seconds(3));
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
     EXPECT_THROW(door.throwState(), std::runtime_error);
 }
