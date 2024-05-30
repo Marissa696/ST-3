@@ -1,53 +1,52 @@
 // Copyright 2024 Saratova Marina
 
 #include <stdexcept>
-#include <thread> // NOLINT [build/c++11]
-#include <chrono> // NOLINT [build/c++11]
+#include <thread>  // NOLINT [build/c++11]
+#include <chrono>  // NOLINT [build/c++11]
 
 #include "TimedDoor.h"
 
-DoorTimerAdapter::DoorTimerAdapter(TimedDoor & door_) : door(door_) {}
+DoorTimeoutAdapter::DoorTimeoutAdapter(TimedDoor &door) : door_(door) {}
 
-void DoorTimerAdapter::Timeout() {
-    if (door.isDoorOpened())
-        throw std::runtime_error("Time's up!");
-    return;
+void DoorTimeoutAdapter::onTimeout() {
+    if (door_.isOpen())
+        throw std::runtime_error("Timeout reached and door is still open!");
 }
 
-TimedDoor::TimedDoor(int timeout_) : iTimeout(timeout_), isOpened(false) {
-    adapter = new DoorTimerAdapter(*this);
+TimedDoor::TimedDoor(int timeout) : timeout_(timeout), isOpen_(false) {
+    adapter_ = new DoorTimeoutAdapter(*this);
 }
 
-bool TimedDoor::isDoorOpened() {
-    return isOpened;
+bool TimedDoor::isOpen() const {
+    return isOpen_;
 }
 
 void TimedDoor::unlock() {
-    if (isOpened)
-        throw std::logic_error("Door is open!!!");
-    isOpened = true;
+    if (isOpen_)
+        throw std::logic_error("The door is already open!");
+    isOpen_ = true;
 }
 
 void TimedDoor::lock() {
-    if (!isOpened)
-        throw std::logic_error("Door is close!!!");
-    isOpened = false;
+    if (!isOpen_)
+        throw std::logic_error("The door is already closed!");
+    isOpen_ = false;
 }
 
-int TimedDoor::getTimeOut() const {
-    return iTimeout;
+int TimedDoor::getTimeout() const {
+    return timeout_;
 }
 
-void TimedDoor::throwState() {
-    adapter->Timeout();
+void TimedDoor::checkState() {
+    adapter_->onTimeout();
 }
 
-void Timer::sleep(int time_) {
-    std::this_thread::sleep_for(std::chrono::seconds(time_));
+void Timer::sleepFor(int seconds) {
+    std::this_thread::sleep_for(std::chrono::seconds(seconds));
 }
 
-void Timer::tregister(int time_, TimerClient* client_) {
-    this->client = client_;
-    sleep(time_);
-    client_->Timeout();
+void Timer::registerClient(int seconds, TimerClient* client) {
+    client_ = client;
+    sleepFor(seconds);
+    client_->onTimeout();
 }
