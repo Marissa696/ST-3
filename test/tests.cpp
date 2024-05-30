@@ -82,7 +82,8 @@ TEST(TimerTest, SleepFunction) {
   auto start = std::chrono::steady_clock::now();
   timer.registerClient(2, nullptr);
   auto end = std::chrono::steady_clock::now();
-  EXPECT_GE(std::chrono::duration_cast<std::chrono::seconds>(end - start).count(), 2);
+  EXPECT_GE(std::chrono::duration_cast
+  <std::chrono::seconds>(end - start).count(), 2);
 }
 
 TEST(DoorTimeoutAdapterTest, AdapterCallsOnTimeout) {
