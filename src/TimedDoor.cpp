@@ -6,7 +6,8 @@
 
 #include "TimedDoor.h"
 
-DoorTimerAdapter::DoorTimerAdapter(TimedDoor & timedDoorRef_) : timedDoorRef(timedDoorRef_) {}
+DoorTimerAdapter::DoorTimerAdapter(TimedDoor & timedDoorRef_)
+ : timedDoorRef(timedDoorRef_) {}
 
 void DoorTimerAdapter::Timeout() {
     if (timedDoorRef.isDoorOpened())
@@ -14,7 +15,8 @@ void DoorTimerAdapter::Timeout() {
     return;
 }
 
-TimedDoor::TimedDoor(int timeoutValue_) : timeoutValue(timeoutValue_), isOpened(false) {
+TimedDoor::TimedDoor(int timeoutValue_) :
+ timeoutValue(timeoutValue_), isOpened(false) {
     timerAdapterPtr = new DoorTimerAdapter(*this);
 }
 
