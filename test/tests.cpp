@@ -99,7 +99,7 @@ TEST(TimedDoorTest, NoThrowStateWhenTimeoutNotReachedWhileOpen) {
     TimedDoor door(5);
     door.unlock();
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    EXPECT_THROW(door.throwState());
+    EXPECT_ANY_THROW(door.throwState());
 }
 
 TEST(TimedDoorTest, ThrowStateWhenTimeoutReachedWhileClosed) {
