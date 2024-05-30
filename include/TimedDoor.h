@@ -6,6 +6,7 @@
 class TimerClient {
  public:
   virtual void onTimeout() = 0;
+  virtual ~TimerClient() = default;
 };
 
 class Door {
@@ -13,6 +14,7 @@ class Door {
   virtual void lock() = 0;
   virtual void unlock() = 0;
   virtual bool isOpen() const = 0;
+  virtual ~Door() = default;
 };
 
 class TimedDoor;
@@ -37,6 +39,7 @@ class TimedDoor : public Door {
   void lock() override;
   int getTimeout() const;
   void checkState();
+  ~TimedDoor();
 };
 
 class Timer {

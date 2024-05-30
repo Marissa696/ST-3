@@ -1,16 +1,16 @@
 // Copyright 2024 Saratova Marina
 
 #include <stdexcept>
-#include <thread>  // NOLINT [build/c++11]
-#include <chrono>  // NOLINT [build/c++11]
-
+#include <thread>
+#include <chrono>
 #include "TimedDoor.h"
 
 DoorTimeoutAdapter::DoorTimeoutAdapter(TimedDoor &door) : door_(door) {}
 
 void DoorTimeoutAdapter::onTimeout() {
-    if (door_.isOpen())
-        throw std::runtime_error("Timeout reached and door is still open!");
+    if (door_.isOpen()) {
+        throw std::runtime_error("Time's up!");
+    }
 }
 
 TimedDoor::TimedDoor(int timeout) : timeout_(timeout), isOpen_(false) {
@@ -22,14 +22,16 @@ bool TimedDoor::isOpen() const {
 }
 
 void TimedDoor::unlock() {
-    if (isOpen_)
-        throw std::logic_error("The door is already open!");
+    if (isOpen_) {
+        throw std::logic_error("Door is already open!");
+    }
     isOpen_ = true;
 }
 
 void TimedDoor::lock() {
-    if (!isOpen_)
-        throw std::logic_error("The door is already closed!");
+    if (!isOpen_) {
+        throw std::logic_error("Door is already closed!");
+    }
     isOpen_ = false;
 }
 
@@ -39,6 +41,10 @@ int TimedDoor::getTimeout() const {
 
 void TimedDoor::checkState() {
     adapter_->onTimeout();
+}
+
+TimedDoor::~TimedDoor() {
+    delete adapter_;
 }
 
 void Timer::sleepFor(int seconds) {
